@@ -1,4 +1,5 @@
 # PowerShell_profile
+```PowerShell
 Import-Module posh-git
 Import-Module posh-dotnet
 Import-Module Terminal-Icons
@@ -23,3 +24,4 @@ function which ($command) {
  Get-Command -Name $command -ErrorAction SilentlyContinue | 
  Select-Object -ExpandProperty Path -ErrorAction SilentlyContinue 
 }
+```
