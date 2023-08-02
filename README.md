@@ -3,7 +3,7 @@
 Import-Module posh-git
 Import-Module posh-dotnet
 Import-Module Terminal-Icons
-oh-my-posh.exe init pwsh --config ~\.oh-my-posh\themes\robbyrussel.omp.json | Invoke-Expression
+oh-my-posh --init --shell pwsh --config $env:POSH_THEMES_PATH/robbyrussell.omp.json | Invoke-Expression
 
 # Set some useful Alias to shorten typing and save some key stroke 
 Set-Alias ll ls 
