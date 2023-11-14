@@ -3,7 +3,7 @@
 ```PowerShell
 # Install-Module -Name Terminal-Icons, posh-git, posh-dotnet, PSFzf -Repository PSGallery
 # PowerShell_profile
-```PowerShell
+
 Import-Module posh-git
 Import-Module posh-dotnet
 Import-Module Terminal-Icons
