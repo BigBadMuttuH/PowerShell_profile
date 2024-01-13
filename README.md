@@ -13,6 +13,7 @@ oh-my-posh --init --shell pwsh --config $env:POSH_THEMES_PATH/robbyrussell.omp.j
 Set-Alias ll ls 
 Set-Alias g git 
 Set-Alias grep findstr
+Set-Alias lg lazygit
 
 # Set Some Option for PSReadLine to show the history of our typed commands
 Set-PSReadLineOption -PredictionSource History 
