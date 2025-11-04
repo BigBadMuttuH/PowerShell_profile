@@ -1,32 +1,73 @@
 ### PowerShell Config
 
 ```PowerShell
-# Install-Module -Name Terminal-Icons, posh-git, posh-dotnet, PSFzf -Repository PSGallery
-# PowerShell_profile
+# --- Prompt (oh-my-posh) ---
+oh-my-posh init pwsh --config robbyrussell | Invoke-Expression
 
-Import-Module posh-git
-Import-Module posh-dotnet
-Import-Module Terminal-Icons
-oh-my-posh --init --shell pwsh --config $env:POSH_THEMES_PATH/robbyrussell.omp.json | Invoke-Expression
-
-# Set some useful Alias to shorten typing and save some key stroke 
-Set-Alias ll ls 
-Set-Alias g git 
-Set-Alias grep findstr
+# --- Aliases/shortcuts ---
 Set-Alias lg lazygit
 
-# Set Some Option for PSReadLine to show the history of our typed commands
-Set-PSReadLineOption -PredictionSource History 
-Set-PSReadLineOption -PredictionViewStyle ListView 
-Set-PSReadLineOption -EditMode Windows 
+# --- Модули / украшательства ---
+Import-Module Terminal-Icons -ErrorAction SilentlyContinue
 
-#Fzf (Import the fuzzy finder and set a shortcut key to begin searching)
-Import-Module PSFzf
-Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+f' -PSReadlineChordReverseHistory 'Ctrl+r'
+# --- fzf базовые настройки ---
+$env:FZF_DEFAULT_OPTS    = '--height 40% --layout=reverse --border'
+$env:FZF_DEFAULT_COMMAND = 'fd --type f --hidden --follow --exclude .git'
 
-# Utility Command that tells you where the absolute path of commandlets are 
-function which ($command) { 
- Get-Command -Name $command -ErrorAction SilentlyContinue | 
- Select-Object -ExpandProperty Path -ErrorAction SilentlyContinue 
+# --- PSReadLine: поведение и подсказки ---
+Import-Module PSReadLine -ErrorAction SilentlyContinue
+Set-PSReadLineOption -EditMode Windows
+Set-PSReadLineOption -PredictionSource HistoryAndPlugin
+Set-PSReadLineOption -PredictionViewStyle ListView
+# Удобный поиск по истории по префиксу стрелками ↑/↓
+Set-PSReadLineKeyHandler -Key UpArrow   -Function HistorySearchBackward
+Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
+
+# --- PSFzf: интеграция fzf с PSReadLine ---
+Import-Module PSFzf -ErrorAction SilentlyContinue
+Set-PsFzfOption `
+  -PSReadlineChordProvider 'Ctrl+t' `
+  -PSReadlineChordReverseHistory 'Ctrl+r' `
+  -EnableAliasFuzzyHistory `
+  -EnableFd `
+  -EnableRipgrep `
+  -TabExpansion
+
+# --- zoxide: умное cd ---
+#  (быстрые прыжки по часто используемым папкам: z, zi, z path)
+Invoke-Expression (& { (zoxide init powershell | Out-String) })
+
+# --- Функции в стиле Linux (вместо alias с параметрами) ---
+
+# ls на базе eza (быстро, с иконками, директории сверху)
+function ls { eza --color=always --icons=always --group-directories-first @args }
+
+function ll { eza -lh  --git --icons=always --group-directories-first @args }
+function la { eza -lha --git --icons=always --group-directories-first @args }
+function llt { eza -lhT --level=2 --icons=always --group-directories-first @args }
+
+# cat -> bat (красиво, без пейджера, как обычный cat)
+function cat { bat --style=plain --paging=never @args }
+
+# grep через ripgrep с цветом (быстрее и умнее стандартного grep)
+function grep { rg --color=always @args }
+
+# Быстрый поиск файла в каталоге (Ctrl+T уже даёт провайдер, но отдельная команда тоже удобна)
+function fzf-file { fd --type f --hidden --follow --exclude .git | fzf }
+
+# Быстрый cd в выбранную папку
+function cdf { fd --type d --hidden --follow --exclude .git | fzf | ForEach-Object { Set-Location $_ } }
+
+# Поиск по содержимому через rg + fzf с превью
+function rga {
+    param([string]$q)
+    if (-not $q) { $q = Read-Host 'Query' }
+    rg --line-number --no-heading --hidden --follow --color always $q |
+        fzf --ansi --preview 'bat --style=plain --color=always --line-range :200 {1} --highlight-line {2}' `
+            --delimiter : --nth 3.. --bind 'enter:become(powershell -NoProfile -Command "code --goto {1}:{2}")'
 }
+
+# --- Качество жизни ---
+# Сделать Ctrl+L очисткой экрана, если вдруг не работает
+Set-PSReadLineKeyHandler -Key Ctrl+L -Function ClearScreen
 ```
