@@ -1,3 +1,15 @@
+### Install Soft
+```cmd
+scoop install git
+scoop install bat fzf eza ripgrep fd lazygit zoxide
+# Модули PowerShell:
+Install-Module PSFzf -Scope CurrentUser -Force
+Install-Module Terminal-Icons -Scope CurrentUser -Force
+# PSReadLine уже встроен в современные PS, но на всякий:
+# Install-Module PSReadLine -Scope CurrentUser -Force
+```
+
+
 ### PowerShell Config
 
 ```PowerShell
