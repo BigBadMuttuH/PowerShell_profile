@@ -79,7 +79,6 @@ function rga {
             --delimiter : --nth 3.. --bind 'enter:become(powershell -NoProfile -Command "code --goto {1}:{2}")'
 }
 
-# --- Качество жизни ---
 # Сделать Ctrl+L очисткой экрана, если вдруг не работает
 Set-PSReadLineKeyHandler -Key Ctrl+L -Function ClearScreen
 ```
