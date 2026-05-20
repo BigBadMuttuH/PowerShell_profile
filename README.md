@@ -1,7 +1,7 @@
 ### Install Soft
 ```cmd
 scoop install git
-scoop install bat fzf eza ripgrep fd lazygit zoxide
+scoop install bat fzf eza ripgrep fd lazygit zoxide aria2
 # Модули PowerShell:
 Install-Module PSFzf -Scope CurrentUser -Force
 Install-Module Terminal-Icons -Scope CurrentUser -Force
